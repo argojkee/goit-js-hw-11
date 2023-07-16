@@ -76,8 +76,10 @@ async function onLoadMoreClick() {
         `"We're sorry, but you've reached the end of search results."`
       );
     }
-  } catch (error) {
-    console.log(error);
+  } catch {
+    Notify.failure(
+      `Oops... Something went wrong. Please reload the page and try again.`
+    );
   }
 }
 
@@ -144,7 +146,7 @@ function smoothScroll() {
     .querySelector('.gallery')
     .firstElementChild.getBoundingClientRect();
   window.scrollBy({
-    top: cardHeight * 2,
+    top: cardHeight * 2.5,
     behavior: 'smooth',
   });
 }

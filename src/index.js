@@ -11,7 +11,7 @@ const btnLoadMoreEl = document.querySelector('.load-more');
 const galleryEl = document.querySelector('.gallery');
 
 formEl.addEventListener('submit', onSubmitForm);
-btnLoadMoreEl.addEventListener('click', onLoadMoreClick);
+btnLoadMoreEl.addEventListener('click', onLoadMoreBtn);
 
 async function onSubmitForm(e) {
   event.preventDefault();
@@ -65,7 +65,7 @@ async function onSubmitForm(e) {
   }
 }
 
-async function onLoadMoreClick() {
+async function onLoadMoreBtn() {
   try {
     const collectionItems = await NewPixabyService.fetchHits();
     const galleryMarkup = makeMarkUp(collectionItems);
@@ -75,16 +75,18 @@ async function onLoadMoreClick() {
 
     if (NewPixabyService.currentHits >= NewPixabyService.currentMaxHits) {
       hiddenLoadMoreBtn();
+
       Notify.failure(
         `"We're sorry, but you've reached the end of search results."`
       );
     }
-  } catch {
-    Notify.failure(
+  } catch (error) {
+      Notify.failure(
       `Oops... Something went wrong. Please reload the page and try again.`
     );
   }
 }
+// }
 
 function makeMarkUp(array) {
   let markupString = '';
@@ -153,3 +155,36 @@ function smoothScroll() {
     behavior: 'smooth',
   });
 }
+
+// async function checkPosition() {
+//   const height = document.body.offsetHeight;
+//   const screenHeight = window.innerHeight;
+
+//   const scrolled = window.scrollY;
+
+//   const threshold = height - screenHeight / 4;
+
+//   const position = scrolled + screenHeight;
+
+//   if (position >= threshold) {
+//     await onLoadMoreBtn();
+//   }
+// }
+
+// function throttle(callee, timeout) {
+//   let timer = null;
+
+//   return function perform(...args) {
+//     if (timer) return;
+
+//     timer = setTimeout(() => {
+//       callee(...args);
+
+//       clearTimeout(timer);
+//       timer = null;
+//     }, timeout);
+//   };
+// }
+
+//       window.removeEventListener('scroll', checkPosition);
+//       window.removeEventListener('resize', checkPosition);

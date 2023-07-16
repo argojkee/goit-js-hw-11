@@ -1,10 +1,9 @@
-import PixabyService from './pixaby-service/pixaby-servise';
+import PixabyService from './api-service/pixaby-service';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const lightbox = new SimpleLightbox('.gallery a');
-
 const NewPixabyService = new PixabyService();
 
 const formEl = document.querySelector('#search-form');
@@ -17,21 +16,25 @@ btnLoadMoreEl.addEventListener('click', onLoadMoreClick);
 async function onSubmitForm(e) {
   event.preventDefault();
 
-  if (e.currentTarget.searchQuery.value.trim() === '') {
+  const userRequest = e.currentTarget.searchQuery.value;
+
+  if (userRequest.trim() === '') {
     return Notify.failure(`Please, enter valid value`);
   }
-  if (e.currentTarget.searchQuery.value.trim() === NewPixabyService.category) {
+
+  if (userRequest.trim() === NewPixabyService.category.trim()) {
     return Notify.failure(`It's alredy current category`);
   }
+
   hiddenLoadMoreBtn();
 
-  NewPixabyService.category = e.currentTarget.searchQuery.value;
   try {
+    NewPixabyService.category = userRequest;
     NewPixabyService.clearCurrentHits();
     NewPixabyService.clearCurrentPage();
     clearMarkup();
 
-    const arraySelectedCategory = await NewPixabyService.fetchHits();
+    const collectionItems = await NewPixabyService.fetchHits();
 
     if (NewPixabyService.currentMaxHits === 0) {
       return Notify.failure(
@@ -43,16 +46,16 @@ async function onSubmitForm(e) {
       `Hooray! We found ${NewPixabyService.currentMaxHits} images.`
     );
 
-    const galleryItemsString = makeMarkUp(arraySelectedCategory);
+    const galleryMarkup = makeMarkUp(collectionItems);
 
-    addGalleryItemsinUi(galleryItemsString);
+    addGalleryItemsinUi(galleryMarkup);
     lightbox.refresh();
 
-    if (NewPixabyService.currentMaxHits > 40) {
+    if (NewPixabyService.currentMaxHits > NewPixabyService.onPage) {
       showLoadMoreBtn();
     } else {
       Notify.failure(
-        `"We're sorry, but you've reached the end of search results."`
+        `We're sorry, but you've reached the end of search results.`
       );
     }
   } catch {
@@ -64,9 +67,9 @@ async function onSubmitForm(e) {
 
 async function onLoadMoreClick() {
   try {
-    const arraySelectedCategory = await NewPixabyService.fetchHits();
-    const galleryItemsString = makeMarkUp(arraySelectedCategory);
-    addGalleryItemsinUi(galleryItemsString);
+    const collectionItems = await NewPixabyService.fetchHits();
+    const galleryMarkup = makeMarkUp(collectionItems);
+    addGalleryItemsinUi(galleryMarkup);
     lightbox.refresh();
     smoothScroll();
 

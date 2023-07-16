@@ -7,15 +7,16 @@ export default class NewPixabyService {
     this.currentPage = 1;
     this.currentHits = 0;
     this.currentMaxHits = 0;
+    this.onPage = 40;
   }
   async fetchHits() {
     const response = await axios.get(
-      `https://pixabay.com/api/?key=${API_KEY}&q=${this.category}&per_page=40&page=${this.currentPage}&orientation="horizontal"&safesearch="true"&image_type="photo"`
+      `https://pixabay.com/api/?key=${API_KEY}&q=${this.category}&per_page=${this.onPage}&page=${this.currentPage}&orientation=horizontal&safesearch=true&image_type=photo`
     );
 
     const promise = await response.data;
 
-    this.currentHits += 40;
+    this.currentHits += this.onPage;
     this.currentMaxHits = promise.totalHits;
 
     const hits = await promise.hits;

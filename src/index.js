@@ -3,7 +3,11 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const lightbox = new SimpleLightbox('.gallery a');
+const lightbox = new SimpleLightbox('.gallery a', {
+  /* options */
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 const NewPixabyService = new PixabyService();
 
 const formEl = document.querySelector('#search-form');
@@ -106,7 +110,7 @@ function makeMarkUp(array) {
     }) => {
       markupString += `<div class="photo-card gallery__item">
     <a class="gallery__link" href=${largeImageURL}>
-  <img class="gallery__image" src=${webformatURL} alt=${tags} loading="lazy" />
+  <img class="gallery__image" src=${webformatURL} alt="${tags}" loading="lazy" />
   </a>
   <div class="info">
     <p class="info-item">

@@ -22,7 +22,10 @@ async function onSubmitForm(e) {
     return Notify.failure(`Please, enter valid value`);
   }
 
-  if (userRequest.trim() === NewPixabyService.category.trim()) {
+  if (
+    userRequest.toLowerCase().trim() ===
+    NewPixabyService.category.toLowerCase().trim()
+  ) {
     return Notify.failure(`It's alredy current category`);
   }
 
@@ -81,7 +84,7 @@ async function onLoadMoreBtn() {
       );
     }
   } catch (error) {
-      Notify.failure(
+    Notify.failure(
       `Oops... Something went wrong. Please reload the page and try again.`
     );
   }
